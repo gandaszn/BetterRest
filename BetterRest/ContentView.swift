@@ -16,6 +16,15 @@ struct ContentView: View {
         return Calendar.current.date(from: components) ?? Date.now
     }
 
+    static let maxCup = 20
+
+    static var cupLabel: [Int: String] {
+        return Dictionary(uniqueKeysWithValues: (0...maxCup).map { cupCount in
+            let label = cupCount == 1 ? "1 cup" : "\(cupCount) cups"
+            return (cupCount, label)
+        })
+    }
+
     @State private var wakeUp = defaultWakeTime
     @State private var sleepAmount = 8.0
     @State private var coffeeAmount = 1
@@ -41,7 +50,12 @@ struct ContentView: View {
                 }
 
                 Section {
-                    Stepper(coffeeAmount == 1 ? "1 cup" : "\(coffeeAmount) cups", value: $coffeeAmount, in: 1...20)
+                    Picker("Number of cups", selection: $coffeeAmount) {
+                        ForEach(0...Self.maxCup, id: \.self) { cupCount in
+                            Text(Self.cupLabel[cupCount, default: ""])
+                        }
+                    }
+                    .pickerStyle(.wheel)
                 } header: {
                     Text("Daily coffee intake")
                 }
