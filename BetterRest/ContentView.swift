@@ -51,6 +51,9 @@ struct ContentView: View {
 
                 Section {
                     Stepper("\(sleepAmount.formatted()) hours", value: $sleepAmount, in: 4...12, step: 0.25)
+                        .onChange(of: sleepAmount, perform: { _ in
+                            calculateBedtime()
+                        })
                 } header: {
                     Text("Desired amount of sleep")
                 }
@@ -62,6 +65,9 @@ struct ContentView: View {
                         }
                     }
                     .pickerStyle(.wheel)
+                    .onChange(of: coffeeAmount, perform: { _ in
+                        calculateBedtime()
+                    })
                 } header: {
                     Text("Daily coffee intake")
                 }
