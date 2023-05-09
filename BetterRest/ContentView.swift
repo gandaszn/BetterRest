@@ -64,7 +64,7 @@ struct ContentView: View {
                             Text(Self.cupLabel[cupCount, default: ""])
                         }
                     }
-                    .pickerStyle(.wheel)
+                    .pickerStyle(.menu)
                     .onChange(of: coffeeAmount, perform: { _ in
                         calculateBedtime()
                     })
