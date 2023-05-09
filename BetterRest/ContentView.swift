@@ -29,9 +29,7 @@ struct ContentView: View {
     @State private var sleepAmount = 8.0
     @State private var coffeeAmount = 1
 
-    @State private var alertTitle = ""
-    @State private var alertMessage = ""
-    @State private var showingAlert = false
+    @State private var recommendedBedtime = ""
 
     var body: some View {
         NavigationView {
@@ -39,6 +37,14 @@ struct ContentView: View {
                 Section {
                     DatePicker("Please enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
                         .labelsHidden()
+                        .datePickerStyle(.wheel)
+                        .onChange(of: wakeUp, perform: { _ in
+                            calculateBedtime()
+                        })
+
+                    Text(recommendedBedtime)
+                        .font(.title3.bold())
+
                 } header: {
                     Text("When do you want to wake up")
                 }
@@ -61,13 +67,8 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("BetterRest")
-            .toolbar {
-                Button("Calculate", action: calculateBedtime)
-            }
-            .alert(alertTitle, isPresented: $showingAlert) {
-                Button("OK") {}
-            } message: {
-                Text(alertMessage)
+            .onAppear {
+                calculateBedtime()
             }
         }
     }
@@ -85,14 +86,10 @@ struct ContentView: View {
 
             let sleepTime = wakeUp - prediction.actualSleep
 
-            alertTitle = "Your ideal bedtime is…"
-            alertMessage = sleepTime.formatted(date: .omitted, time: .shortened)
+            recommendedBedtime = "Your ideal bedtime is at " + sleepTime.formatted(date: .omitted, time: .shortened)
         } catch {
-            alertTitle = "Error"
-            alertMessage = "Sorry, there was a problem calculating your bedtime."
+            recommendedBedtime = "Sorry, there was a problem calculating your bedtime."
         }
-
-        showingAlert = true
     }
 }
 
